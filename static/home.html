@@ -1,0 +1,173 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Voice Command Project</title>
+    <style>
+        body {
+            position: relative;
+            margin: 0;
+            overflow: hidden; /* Hide overflow to prevent scrolling */
+        }
+
+        video {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            object-fit: cover; /* Cover the entire viewport */
+            z-index: -1; /* Place the video behind other elements */
+        }
+
+        #voiceCommandInput,
+        button {
+            margin-top: 20px;
+            margin-left: 20px;
+        }
+
+        #micImage {
+            position: fixed;
+            bottom: 60px;
+            right: 60px;
+            width: 80px; /* Adjust the width as needed */
+            height: 80px; /* Adjust the height as needed */
+            cursor: pointer; /* Add cursor style to indicate it's clickable */
+        }
+
+        #resultDisplay {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            background-color: rgba(255, 255, 255, 0.3); /* White with 30% opacity */
+            padding: 10px;
+            border-radius: 5px;
+            color: white;
+            width: 200px; /* Adjust the width as needed */
+            text-align: center;
+        }
+
+        #aiAssistantTextContainer {
+            position: fixed;
+            left: 20px; /* Adjust the distance from the left as needed */
+            bottom: 160px; /* Adjust the distance from the bottom as needed */
+            display: flex;
+            flex-direction: column;
+            align-items: flex-start;
+        }
+
+        #aiAssistantTextLeft,
+        #aiAssistantTextRight {
+            font-weight: bold;
+            font-size: 22px;
+            color: white;
+            max-width: 300px; /* Adjust the max-width as needed */
+            text-transform: uppercase; /* Convert text to uppercase */
+        }
+
+        #aiAssistantTextLeft {
+            animation: slide-in-left 1s ease-out forwards; /* Apply animation */
+        }
+
+        #aiAssistantTextRight {
+            animation: slide-in-right 1s ease-out forwards; /* Apply animation */
+        }
+
+        /* Define keyframes for animation from left */
+        @keyframes slide-in-left {
+            0% {
+                opacity: 0;
+                transform: translateX(-100%);
+            }
+            100% {
+                opacity: 1;
+                transform: translateX(0);
+            }
+        }
+
+        /* Define keyframes for animation from right */
+        @keyframes slide-in-right {
+            0% {
+                opacity: 0;
+                transform: translateX(100%);
+            }
+            100% {
+                opacity: 1;
+                transform: translateX(0);
+            }
+        }
+
+        .color-text {
+            color: rgb(255, 102, 0);
+        }
+
+        @keyframes blink {
+        0% { opacity: 1; }
+        50% { opacity: 0; }
+        100% { opacity: 1; }
+    }
+
+    #listeningText {
+        display: none;
+        position: fixed;
+        bottom: 200px;
+        right: 30px;
+        color: rgb(255, 255, 255);
+        font-size: 24px;
+        animation: blink 1s infinite; /* Apply the blink animation */
+    }
+    </style>
+</head>
+<body>
+    <video autoplay muted loop>
+        <source src="./1.mp4" type="video/mp4">
+        Your browser does not support the video tag.
+    </video>
+
+   <!-- <img id="equalizerVideo" src="./4-unscreen.gif" alt="Equalizer GIF"> -->
+
+    <div id="resultDisplay"></div>
+
+    <!-- Mic Image -->
+    <img id="micImage" src="./microphone.png" alt="Microphone Image" onclick="startVoiceRecognition()">
+    <div id="listeningText">I'm listening...</div>
+
+    <!-- AI Assistant Text Container -->
+    <div id="aiAssistantTextContainer">
+        <div id="aiAssistantTextLeft">
+            Welcome to the Future of Assistance! 🚀
+        </div>
+        <div id="aiAssistantTextRight">
+            Unleash the power of AI magic – your virtual companion is here to make things happen. Ask away, and let the digital adventure begin! 🌐🤖<br>
+            #AIWonder-<span class="color-text">KALPATARU</span>
+        </div>
+    </div>
+
+    <!-- Include necessary scripts -->
+    <script src="./speech.js"></script>
+
+    <script>
+        // Function to toggle the visibility of the equalizer video
+       /* function toggleEqualizer() {
+            var equalizerVideo = document.getElementById('equalizerVideo');
+            if (equalizerVideo.style.display === 'none' || equalizerVideo.style.display === '') {
+                equalizerVideo.style.display = 'block';
+                setTimeout(function () {
+                    equalizerVideo.style.display = 'none';
+                }, 5000); // Hide the equalizer after 5 seconds (adjust as needed)
+            } else {
+                equalizerVideo.style.display = 'none';
+            }
+        } */
+
+        // Example: Call toggleEqualizer() when the application replies back with a voice command
+       /* function handleVoiceReply() {
+            // Code to handle voice reply goes here
+
+            // Call toggleEqualizer() after handling the voice reply
+            toggleEqualizer();
+        } */
+    </script>
+</body>
+</html>

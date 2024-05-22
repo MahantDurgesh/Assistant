@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Select Image</title>
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+</head>
+<body>
+
+<h2>Select an Image</h2>
+
+<form id="uploadForm" enctype="multipart/form-data">
+  <input type="file" id="fileInput" name="image" accept="image/*">
+  <button type="button" onclick="uploadImage()">Upload Image</button>
+</form>
+
+<div id="result"></div>
+
+<script>
+function uploadImage() {
+    var fileInput = document.getElementById('fileInput');
+    var file = fileInput.files[0];
+    var formData = new FormData();
+    formData.append('image', file);
+
+    $.ajax({
+        url: 'process_image.py', // Replace with the URL of your server-side script
+        type: 'POST',
+        data: formData,
+        processData: false,
+        contentType: false,
+        success: function(response) {
+            document.getElementById('result').innerHTML = response;
+        },
+        error: function(xhr, status, error) {
+            console.error('Error:', error);
+        }
+    });
+}
+</script>
+
+</body>
+</html>

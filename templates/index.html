@@ -1,0 +1,316 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='styles.css') }}">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Capture and Display Image</title>
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+<style>
+  #videoContainer {
+    position: relative; /* Set position to relative for absolute positioning */
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100; /* Set the height to the full viewport height */
+    border: 1px solid #ccc; /* Border color */
+    border-radius: 10px; /* Rounded corners */
+    overflow: hidden; /* Hide overflowing content (like rounded corners) */
+  } #text {
+  display: flex;
+  font-family: 'Franklin Gothic Medium', 'Arial Narrow', Arial, sans-serif;
+  color: white;
+  font-size: 30px;
+  /* Animation */
+  animation-name: slideFromLeft;
+  animation-duration: 1.5s;
+  animation-timing-function: ease-out;
+}
+
+@keyframes slideFromLeft {
+  from {
+    transform: translateX(-100%);
+    opacity: 0;
+  }
+  to {
+    transform: translateX(0);
+    opacity: 1;
+  }
+}
+#newtext {
+  display: flex;
+  justify-content: center;
+  font-family: 'Franklin Gothic Medium', 'Arial Narrow', Arial, sans-serif;
+  color: rgb(213, 233, 33);
+  /* Animation */
+  animation-name: slideFromRight;
+  animation-duration: 1.5s;
+  animation-timing-function: ease-out;
+}
+
+@keyframes slideFromRight {
+  from {
+    transform: translateX(100%);
+    opacity: 0;
+  }
+  to {
+    transform: translateX(0);
+    opacity: 1;
+  }
+}#titletext {
+  display: flex;
+  justify-content: center;
+  font-family: 'Franklin Gothic Medium', 'Arial Narrow', Arial, sans-serif;
+  color: black;
+  opacity: 0; /* Initially set the opacity to 0 */
+  animation: dissolve 3.5s ease forwards; /* Apply dissolve animation */
+  font-size: 21px;
+}
+
+@keyframes dissolve {
+  from {
+    opacity: 0; /* Start with opacity 0 */
+  }
+  to {
+    opacity: 4; /* Gradually increase opacity to 1 */
+  }
+}
+  #captureButton {
+    display: block;
+    margin: 20px auto; /* Center the button horizontally with some space from the top */
+    padding: 10px 20px; /* Add padding to the button */
+    background-color: #4CAF50; /* Green background color */
+    color: white; /* White text color */
+    border: none; /* Remove border */
+    border-radius: 5px; /* Rounded corners */
+    cursor: pointer; /* Add cursor pointer on hover */
+    transition: background-color 0.3s; /* Smooth transition for background color */
+  }
+  #captureButton:hover {
+    background-color: #45a049; /* Dark green background color on hover */
+  }
+  #navigateButton {
+    display: block;
+    margin: 20px auto; /* Center the button horizontally with some space from the top */
+    padding: 10px 20px; /* Add padding to the button */
+    background-color: #007bff; /* Blue background color */
+    color: white; /* White text color */
+    border: none; /* Remove border */
+    border-radius: 5px; /* Rounded corners */
+    cursor: pointer; /* Add cursor pointer on hover */
+    transition: background-color 0.3s; /* Smooth transition for background color */
+  }
+  #navigateButton:hover {
+    background-color: #0056b3; /* Dark blue background color on hover */
+  }
+  #result {
+    display: flex;
+    justify-content: center; /* Horizontally center the content */
+    align-items: center; /* Vertically center the content */
+    text-align: center; /* Center the text within the div */
+    height: 100; /* Set the height of the container to full viewport height */
+}
+</style>
+</head>
+<body>
+
+<h2 id="text">EYES SIGHT DETECTION WINDOW</h2>
+<h2 id="newtext">WORK LOAD AND UNHEALTHY LIFESTYLE CAUSE TO SOME MAJOR HEALTH ISSUE </h2>
+<h2 id="titletext">CATARACTS, HYPERTENSION, RETINOBLASTOMA, DIABETICRETINOPATHY, GLAUCOMA ARE SOME MAJOR EYE SYMPTOMS DISEASES</h2>
+
+<div id="videoContainer">
+  <video id="videoElement" width="400" height="300" autoplay></video>
+</div>
+
+<button id="captureButton">Capture Image</button>
+
+<div id="imagePreview" style="display:none;">
+  <h3>Preview</h3>
+  <img id="previewImage" width="200" height="150">
+  <button id="confirmButton">Confirm</button>
+</div>
+
+<div id="result"></div>
+
+<script>
+// Get access to the camera
+navigator.mediaDevices.getUserMedia({ video: true })
+.then(function(stream) {
+  var video = document.getElementById('videoElement');
+  video.srcObject = stream;
+  video.play();
+})
+.catch(function(err) {
+  console.error('Error accessing the camera: ', err);
+});
+function createNavigateButton() {
+  var navigateButton = document.createElement('button');
+  navigateButton.textContent = 'Navigate to Assistant';
+  navigateButton.id = 'navigateButton';
+  navigateButton.onclick = navigateToHome;
+  document.body.appendChild(navigateButton);
+}
+
+// Function to navigate to the 'home' page
+// Function to navigate to the 'home' page
+function navigateToHome() {
+    window.open("/static/home.html", "_blank"); // Open home.html in a new tab
+}
+// Function to capture the image
+$('#captureButton').click(function() {
+  var canvas = document.createElement('canvas');
+  var video = document.getElementById('videoElement');
+  canvas.width = video.videoWidth;
+  canvas.height = video.videoHeight;
+  canvas.getContext('2d').drawImage(video, 0, 0, canvas.width, canvas.height);
+
+  // Display the captured image in a preview window
+  var previewImage = document.getElementById('previewImage');
+  previewImage.src = canvas.toDataURL('image/jpeg');
+  $('#imagePreview').show();
+
+  // Event listener for the confirm button
+  $('#confirmButton').click(function() {
+    // Hide the preview window
+    $('#imagePreview').hide();
+
+     // Clear the previous result
+     $('#result').empty();
+    // Convert the canvas image to a Blob
+    canvas.toBlob(function(blob) {
+      // Create a file from the Blob
+      var file = new File([blob], 'captured_image.jpg', { type: 'image/jpeg' });
+
+      // Append the file to FormData
+      var formData = new FormData();
+      formData.append('image', file);
+
+      // Perform your desired action with the captured image file (e.g., upload via AJAX)
+      $.ajax({
+                url: 'http://localhost:5000/process_image', // Assuming Flask app is running locally
+                type: 'POST',
+                data: formData,
+                processData: false,
+                contentType: false,
+                success: function(response) {
+                    // Function to handle the response and display/speak preventive measures
+                    function handleResponse(response) {
+                        // Extract the prediction from the response string
+                        var prediction = response.split(':')[1].trim().split(' ')[0];
+
+                        // Display the result
+                        document.getElementById('result').innerHTML = response;
+                        
+                        // Speak the result using text-to-speech
+                        speak(response);
+
+                        // Check if the prediction contains certain keywords and display/speak corresponding preventive measures
+                        if (prediction.includes("Normal")) {
+                            var preventionMeasures = "Great! Your eyes are healthy.<br>" +
+                                "Preventive measures:<br>" +
+                                "1. Wash your eyes frequently with clean cold water<br>" +
+                                "2. Avoid dirt<br>" +
+                                "3. Avoid direct sunlight over eyes and normal laser lights<br>" +
+                                "4. Avoid touching eyes frequently<br>" +
+                                "5. Examine eyes regularly";
+                            speak(preventionMeasures);
+                            document.getElementById('result').innerHTML += "<br><br>" + preventionMeasures;
+                        } else if (prediction.includes("Cataracts")) {
+                          var preventionMeasures = "Prevention for Cataracts:<br>" +
+        "1. Protect your eyes from UV rays<br>" +
+        "2. Quit smoking<br>" +
+        "3. Maintain a healthy diet<br>" +
+        "4. Manage other health conditions<br>" +
+        "5. Limit alcohol consumption<br>" +
+        "6. Regular eye exams<br><br>" +
+        "<b>Treatment:</b> The only effective treatment for cataracts is surgery.";
+    speak(preventionMeasures);
+    document.getElementById('result').innerHTML += "<br><br>" + preventionMeasures;
+} else if (prediction.includes("DiabeticRetinopathy")) {
+    var preventionMeasures = "Prevention for Diabetic Retinopathy:<br>" +
+        "1. Control blood sugar levels<br>" +
+        "2. Manage blood pressure and cholesterol<br>" +
+        "3. Regular eye exams<br>" +
+        "4. Quit smoking<br>" +
+        "5. Maintain a healthy lifestyle<br><br>" +
+        "<b>Treatment:</b> Diabetic retinopathy treatment may include: <br>" +
+        "1. Laser treatment<br>" +
+        "2. Injections<br>" +
+        "3. Vitrectomy<br>" +
+        "4. Intravitreal steroids";
+    speak(preventionMeasures);
+    document.getElementById('result').innerHTML += "<br><br>" + preventionMeasures;
+} else if (prediction.includes("Glaucoma")) {
+    var preventionMeasures = "Prevention for Glaucoma:<br>" +
+        "1. Regular eye exams<br>" +
+        "2. Know your risk factors<br>" +
+        "3. Protect your eyes<br>" +
+        "4. Healthy lifestyle choices<br><br>" +
+        "<b>Treatment:</b> Glaucoma treatment may include: <br>" +
+        "1. Medication<br>" +
+        "2. Laser therapy<br>" +
+        "3. Surgery<br>" +
+        "4. Lifestyle modifications<br>" +
+        "5. Regular follow-up care";
+    speak(preventionMeasures);
+    document.getElementById('result').innerHTML += "<br><br>" + preventionMeasures;
+} else if (prediction.includes("Hypertension")) {
+    var preventionMeasures = "Prevention for Hypertension:<br>" +
+        "1. Healthy diet<br>" +
+        "2. Maintain a healthy weight<br>" +
+        "3. Regular exercise<br>" +
+        "4. Limit alcohol intake<br>" +
+        "5. Quit smoking<br>" +
+        "6. Manage stress<br><br>" +
+        "<b>Treatment:</b> Hypertension treatment may include: <br>" +
+        "1. Medication<br>" +
+        "2. Regular monitoring<br>" +
+        "3. Lifestyle modifications";
+    speak(preventionMeasures);
+    document.getElementById('result').innerHTML += "<br><br>" + preventionMeasures;
+} else if (prediction.includes("Retinoblastoma")) {
+    var preventionMeasures = "Prevention for Retinoblastoma:<br>" +
+        "1. Genetic counseling<br>" +
+        "2. Prenatal testing<br><br>" +
+        "<b>Treatment:</b> Retinoblastoma treatment may include: <br>" +
+        "1. Chemotherapy<br>" +
+        "2. Radiation therapy<br>" +
+        "3. Surgery<br>" +
+        "4. Cryotherapy and laser therapy<br>" +
+        "5. Intra-arterial chemotherapy (IAC)<br>" +
+        "6. Clinical trials";
+    speak(preventionMeasures);
+    document.getElementById('result').innerHTML += "<br><br>" + preventionMeasures;
+}else {
+                            // Handle any other prediction here
+                        }
+                    }
+
+                    // Call the function to handle the response
+                    handleResponse(response);
+                    // Call the function to create the navigate button
+                    createNavigateButton();
+                },
+                error: function(xhr, status, error) {
+                    console.error('Error:', error);
+                }
+      });
+    }, 'image/jpeg');
+  });
+  
+  // Clear the previous result when capturing a new image
+  $('#result').empty();
+
+  // Hide the navigate button when the capture button is clicked
+  $('#navigateButton').hide();
+});
+
+// Function to speak the result using text-to-speech
+function speak(text) {
+  var speech = new SpeechSynthesisUtterance(text);
+  window.speechSynthesis.speak(speech);
+}
+</script>
+
+</body>
+</html>

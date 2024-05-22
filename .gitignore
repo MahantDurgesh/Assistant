@@ -1,0 +1,7 @@
+node_modules/
+dataset/
+test/
+eye_disease_detector.h5
+static/1.mp4
+**/1.mp4
+**/eye_disease_detector.h5
